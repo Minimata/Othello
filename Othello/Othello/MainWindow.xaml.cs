@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static Othello.Board;
 
 namespace Othello
 {
@@ -23,6 +24,17 @@ namespace Othello
         public MainWindow()
         {
             InitializeComponent();
+
+
+            Board b = new Board();
+
+            b.gameBoard[3, 3] = TileState.White;
+            b.gameBoard[4, 4] = TileState.White;
+            b.gameBoard[3, 4] = TileState.Black;
+            b.gameBoard[4, 3] = TileState.Black;
+
+            b.ShowInConsole();
+
         }
     }
 }

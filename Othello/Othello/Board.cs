@@ -15,7 +15,7 @@ namespace Othello
     {
         public enum TileState
         {
-            Empty,
+            Empty = 0,
             Black,
             White
         };
@@ -38,11 +38,15 @@ namespace Othello
 
         private List<Vector2i> directions;
 
-        private TileState[,] gameBoard;
+        public TileState[,] gameBoard;
+
+        
 
         public Board()
         {
             gameBoard = new TileState[8,8];
+
+            directions = new List<Vector2i>();
 
             directions.Add(new Vector2i(0, 1));
             directions.Add(new Vector2i(0, -1));
@@ -54,6 +58,17 @@ namespace Othello
             directions.Add(new Vector2i(-1, -1));
 
 
+        }
+
+        public void ShowInConsole()
+        {
+            for(int i = 0; i < gameBoard.GetLength(0); i++)
+            {
+                for (int j = 0; j < gameBoard.GetLength(1); j++)
+                {
+                    Console.Write(gameBoard[i, j]);
+                }
+            }
         }
 
         private TileState GetTileState(bool isWhite)
