@@ -6,8 +6,6 @@
         xmlns:local="clr-namespace:Othello"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid Background="Red">
-        <Grid x:Name="g_Game" Background="Blue" Margin="125,0,127,72" Height="185" VerticalAlignment="Bottom"/>
-
+    <Grid x:Name="plate" Background="Green">
     </Grid>
 </Window>

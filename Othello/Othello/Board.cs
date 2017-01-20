@@ -13,6 +13,7 @@ namespace Othello
 {
     class Board : IPlayable
     {
+        public int NumTiles { get; private set; }
         public enum TileState
         {
             Empty,
@@ -40,9 +41,9 @@ namespace Othello
 
         private TileState[,] gameBoard;
 
-        public Board()
+        public Board(int numTiles = 8)
         {
-            gameBoard = new TileState[8,8];
+            Reset(numTiles);
 
             directions.Add(new Vector2i(0, 1));
             directions.Add(new Vector2i(0, -1));
@@ -52,8 +53,12 @@ namespace Othello
             directions.Add(new Vector2i(-1, 0));
             directions.Add(new Vector2i(-1, 1));
             directions.Add(new Vector2i(-1, -1));
+        }
 
-
+        public void Reset(int numTiles = 8)
+        {
+            this.NumTiles = numTiles;
+            gameBoard = new TileState[NumTiles, NumTiles];
         }
 
         private TileState GetTileState(bool isWhite)
