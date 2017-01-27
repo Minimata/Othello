@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,16 +24,17 @@ namespace Othello
     {
         private Board board;
         public int BoardThickness { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
             board = new Board();
 
             BoardThickness = 30;
-            createBoard(board.NumTiles, BoardThickness);
+            createBoard(board, BoardThickness);
         }
 
-        private void createBoard(int numTiles, int thick = 30)
+        private void createBoard(Board board, int thick = 30)
         {
             // Create the Grid
             Grid DynamicGrid = new Grid();
@@ -41,7 +43,7 @@ namespace Othello
             DynamicGrid.VerticalAlignment = VerticalAlignment.Stretch;
             DynamicGrid.ShowGridLines = false;
 
-            for (int i = 0; i < numTiles; i++)
+            for (int i = 0; i < board.NumTiles; i++)
             {
                 ColumnDefinition col = new ColumnDefinition();
                 col.Width = new GridLength(1, GridUnitType.Star);
@@ -52,9 +54,9 @@ namespace Othello
                 DynamicGrid.RowDefinitions.Add(row);
             }
 
-            for (int i = 0; i < numTiles; i++)
+            for (int i = 0; i < board.NumTiles; i++)
             {
-                for (int j = 0; j < numTiles; j++)
+                for (int j = 0; j < board.NumTiles; j++)
                 {
                     UIElement tile = CreateTile(i, j);
                     DynamicGrid.Children.Add(tile);
@@ -74,7 +76,16 @@ namespace Othello
             Grid.SetColumn(tile, x);
             Grid.SetRow(tile, y);
 
+            tile.MouseDown += this.tile_MouseDown;
+
             return tile;
+        }
+
+        private void tile_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Rectangle tile = (Rectangle) sender;
+            int x = Grid.GetColumn(tile);
+            int y = Grid.GetRow(tile);
         }
     }
 }

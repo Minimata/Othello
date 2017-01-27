@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,8 +18,8 @@ namespace Othello
         public enum TileState
         {
             Empty = 0,
-            Black,
-            White
+            Black = -1,
+            White = 1
         };
 
         public struct Vector2i
@@ -38,10 +39,7 @@ namespace Othello
         }
 
         private List<Vector2i> directions;
-
-        public TileState[,] gameBoard;
-
-        
+        public TileState[,] LogicBoard { get; set; }
 
         public Board(int numTiles = 8)
         {
@@ -62,61 +60,16 @@ namespace Othello
         public void Reset(int numTiles = 8)
         {
             this.NumTiles = numTiles;
-            gameBoard = new TileState[NumTiles, NumTiles];
+            LogicBoard = new TileState[NumTiles, NumTiles];
         }
-
-        public void ShowInConsole()
-        {
-            for(int i = 0; i < gameBoard.GetLength(0); i++)
-            {
-                for (int j = 0; j < gameBoard.GetLength(1); j++)
-                {
-                    Console.Write(gameBoard[i, j]);
-                }
-            }
-        }
-
-        private TileState GetTileState(bool isWhite)
-        {
-            if (isWhite)
-            {
-                return TileState.White;
-            }
-            else
-            {
-                return TileState.Black;
-            }
-        }
-
-
+        
         public bool isPlayable(int column, int line, bool isWhite)
         {
-            List<Vector2i> changed = new List<Vector2i>();
-            //6 direction
-            foreach (var direction in directions)
-            {
-                var directionCopy = direction;
-                List<Vector2i> changedTemp = new List<Vector2i>();
-                while (gameBoard[column + directionCopy.x, line + directionCopy.y] == GetTileState(isWhite))
-                {
-                    changedTemp.Add(directionCopy);
-                    directionCopy += direction;
-                }
+            bool response = false;
 
-                try
-                {
-                    if (gameBoard[column + directionCopy.x, line + directionCopy.y] == GetTileState(!isWhite))
-                    {
-                        changed.AddRange(changedTemp);
-                    }
-                }
-                catch (IndexOutOfRangeException e)
-                {
-                    
-                }
-            }
 
-            return (changed.Count > 0);
+
+            return response;
         }
 
         public bool playMove(int column, int line, bool isWhite)
