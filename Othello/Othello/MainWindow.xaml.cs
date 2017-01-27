@@ -25,6 +25,8 @@ namespace Othello
         private Board board;
         public int BoardThickness { get; set; }
 
+        private Grid DynamicGrid;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,7 +39,7 @@ namespace Othello
         private void createBoard(Board board, int thick = 30)
         {
             // Create the Grid
-            Grid DynamicGrid = new Grid();
+            DynamicGrid = new Grid();
             DynamicGrid.Margin = new Thickness(thick, thick, thick, thick);
             DynamicGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
             DynamicGrid.VerticalAlignment = VerticalAlignment.Stretch;
@@ -81,11 +83,23 @@ namespace Othello
             return tile;
         }
 
+        private void UpdateBoard(int[,] tilePositions, bool isWhite)
+        {
+            for(int i = 0; i < tilePositions.GetLength(0); i++)
+            {
+                DynamicGrid.Children
+                  .Cast<UIElement>()
+                  .First(e => Grid.GetColumn(e) == tilePositions[i,0] && Grid.GetRow(e) == tilePositions[i,1]);
+
+            }
+        }
+
         private void tile_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Rectangle tile = (Rectangle) sender;
             int x = Grid.GetColumn(tile);
             int y = Grid.GetRow(tile);
+            board.TileClicked(x, y);
         }
     }
 }
