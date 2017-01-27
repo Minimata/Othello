@@ -62,12 +62,15 @@ namespace Othello
             this.NumTiles = numTiles;
             LogicBoard = new TileState[NumTiles, NumTiles];
         }
+
+        public void TileClicked(int column, int line)
+        {
+            
+        }
         
         public bool isPlayable(int column, int line, bool isWhite)
         {
             bool response = false;
-
-
 
             return response;
         }
