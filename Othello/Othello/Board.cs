@@ -1,12 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Effects;
 
 using OthelloConsole;
 
@@ -14,6 +7,8 @@ namespace Othello
 {
     class Board : IPlayable
     {
+        private MainWindow main;
+        private bool isWhite;
         public int NumTiles { get; private set; }
         public enum TileState
         {
@@ -39,14 +34,15 @@ namespace Othello
         }
 
         private List<Vector2i> directions;
-        public TileState[,] LogicBoard { get; set; }
+        public int[,] LogicBoard { get; set; }
 
-        public Board(int numTiles = 8)
+        public Board(int numTiles = 8, MainWindow parent = null)
         {
-            Reset(numTiles);
+            main = parent;
+            NumTiles = numTiles;
+            Reset();
 
             directions = new List<Vector2i>();
-
             directions.Add(new Vector2i(0, 1));
             directions.Add(new Vector2i(0, -1));
             directions.Add(new Vector2i(1, 0));
@@ -57,20 +53,33 @@ namespace Othello
             directions.Add(new Vector2i(-1, -1));
         }
 
-        public void Reset(int numTiles = 8)
+        public void Reset()
         {
-            this.NumTiles = numTiles;
-            LogicBoard = new TileState[NumTiles, NumTiles];
+            isWhite = false;
+
+            LogicBoard = new int[NumTiles, NumTiles];
+            int half = NumTiles/2;
+            LogicBoard[half - 1, half - 1] = (int) TileState.White;
+            LogicBoard[half, half] = (int) TileState.White;
+            LogicBoard[half - 1, half] = (int) TileState.Black;
+            LogicBoard[half, half - 1] = (int) TileState.Black;
         }
 
         public void TileClicked(int column, int line)
         {
-            
+            if (isPlayable(column, line, isWhite))
+            {
+                //playMove(column, line, isWhite);
+                main.UpdateBoard(new int[,] { { column, line } }, isWhite);
+                isWhite = !isWhite;
+            }
         }
         
         public bool isPlayable(int column, int line, bool isWhite)
         {
-            bool response = false;
+            bool response = true;
+
+            
 
             return response;
         }

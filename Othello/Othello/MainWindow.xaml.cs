@@ -2,18 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static Othello.Board;
 
 namespace Othello
 {
@@ -24,16 +17,24 @@ namespace Othello
     {
         private Board board;
         public int BoardThickness { get; set; }
-
         private Grid DynamicGrid;
+
+        private delegate void KeyPressed(object sender, KeyEventArgs e);
+
+        private Dictionary<Key, KeyPressed> KeyEvents;
 
         public MainWindow()
         {
             InitializeComponent();
-            board = new Board();
-
             BoardThickness = 30;
+            board = new Board(parent: this);
+
             createBoard(board, BoardThickness);
+            WholeBoardUpdate(board.LogicBoard);
+
+            KeyEvents = new Dictionary<Key, KeyPressed>();
+            KeyEvents.Add(Key.R, RPressed);
+            KeyEvents.Add(Key.Escape, EscPressed);
         }
 
         private void createBoard(Board board, int thick = 30)
@@ -83,14 +84,50 @@ namespace Othello
             return tile;
         }
 
-        private void UpdateBoard(int[,] tilePositions, bool isWhite)
+        public void WholeBoardUpdate(int[,] logicBoard)
+        {
+            createBoard(board, BoardThickness);
+            for (int i = 0; i < logicBoard.GetLength(0); i++)
+            {
+                for (int j = 0; j < logicBoard.GetLength(1); j++)
+                {
+                    Rectangle rect = DynamicGrid.Children
+                        .Cast<Rectangle>()
+                        .First(e => Grid.GetColumn(e) == i && Grid.GetRow(e) == j);
+                    switch (logicBoard[i, j])
+                    {
+                        case 0:
+                            rect.Fill = Brushes.DarkGreen;
+                            break;
+                        case 1:
+                            rect.Fill = Brushes.White;
+                            break;
+                        case -1:
+                            rect.Fill = Brushes.Black;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        public void UpdateBoard(int[,] tilePositions, bool isWhite)
         {
             for(int i = 0; i < tilePositions.GetLength(0); i++)
             {
-                DynamicGrid.Children
-                  .Cast<UIElement>()
+                Rectangle rect = DynamicGrid.Children
+                  .Cast<Rectangle>()
                   .First(e => Grid.GetColumn(e) == tilePositions[i,0] && Grid.GetRow(e) == tilePositions[i,1]);
 
+                if (isWhite)
+                {
+                    rect.Fill = Brushes.White;
+                }
+                else
+                {
+                    rect.Fill = Brushes.Black;
+                }
             }
         }
 
@@ -101,5 +138,26 @@ namespace Othello
             int y = Grid.GetRow(tile);
             board.TileClicked(x, y);
         }
+        
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (KeyEvents.ContainsKey(e.Key))
+            {
+                KeyEvents[e.Key](sender, e);
+            }
+        }
+
+        private void RPressed(object sender, KeyEventArgs e)
+        {
+            board.Reset();
+            WholeBoardUpdate(board.LogicBoard);
+        }
+
+        private void EscPressed(object sender, KeyEventArgs e)
+        {
+            Close();
+        }
+        
     }
 }
