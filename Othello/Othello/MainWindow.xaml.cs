@@ -114,23 +114,21 @@ namespace Othello
             }
         }
 
-        public void UpdateBoard(int[,] tilePositions, bool isWhite)
+        public void UpdateBoard(Tuple<int, int> pair, bool isWhite)
         {
-            for(int i = 0; i < tilePositions.GetLength(0); i++)
-            {
-                Rectangle rect = DynamicGrid.Children
-                  .Cast<Rectangle>()
-                  .First(e => Grid.GetColumn(e) == tilePositions[i,0] && Grid.GetRow(e) == tilePositions[i,1]);
+            Rectangle rect = DynamicGrid.Children
+                .Cast<Rectangle>()
+                .First(e => Grid.GetColumn(e) == pair.Item1 && Grid.GetRow(e) == pair.Item2);
 
-                if (isWhite)
-                {
-                    rect.Fill = Brushes.White;
-                }
-                else
-                {
-                    rect.Fill = Brushes.Black;
-                }
+            if (isWhite)
+            {
+                rect.Fill = Brushes.White;
             }
+            else
+            {
+                rect.Fill = Brushes.Black;
+            }
+            
         }
 
         private void tile_MouseDown(object sender, MouseButtonEventArgs e)

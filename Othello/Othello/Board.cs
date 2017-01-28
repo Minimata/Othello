@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Windows.Documents;
 using OthelloConsole;
 
 namespace Othello
@@ -77,18 +77,12 @@ namespace Othello
 
         public void TileClicked(int column, int line)
         {
-            if (isPlayable(column, line, isWhite))
-            {
-                //playMove(column, line, isWhite);
-                main.UpdateBoard(new int[,] { { column, line } }, isWhite);
-                isWhite = !isWhite;
-            }
+            playMove(column, line, isWhite);
         }
         
         public bool isPlayable(int column, int line, bool isWhite)
         {
-            bool response = false;
-            if((LogicBoard[column, line] != 0)) return response; // Tile must be empty
+            if((LogicBoard[column, line] != 0)) return false; // Tile must be empty
 
             int color = (int) TileState.Black;
             if (isWhite) color = (int) TileState.White;
@@ -109,17 +103,49 @@ namespace Othello
                     }
                     if(tile.IsValid(NumTiles) && LogicBoard[tile.x, tile.y] == color)
                     {
-                        response = true;
+                        return true;
                     }
                 }
             }
 
-            return response;
+            return false;
         }
 
         public bool playMove(int column, int line, bool isWhite)
         {
-            throw new NotImplementedException();
+            if (isPlayable(column, line, isWhite))
+            {
+                int color = (int)TileState.Black;
+                if (isWhite) color = (int)TileState.White;
+                Vector2i pos = new Vector2i(column, line);
+                List<Tuple<int, int>> pawnsToReplace = new List<Tuple<int, int>>();
+
+                foreach (var dir in directions)
+                {
+                    List<Tuple<int, int>> tmp = new List<Tuple<int, int>>();
+                    Vector2i tile = pos + dir;
+                    while (tile.IsValid(NumTiles) &&
+                        LogicBoard[tile.x, tile.y] != color &&
+                        LogicBoard[tile.x, tile.y] != 0)
+                    {
+                        tmp.Add(new Tuple<int, int>(tile.x, tile.y));
+                        tile = tile + dir;
+                    }
+                    if (tile.IsValid(NumTiles) && LogicBoard[tile.x, tile.y] == color)
+                    {
+                        pawnsToReplace.Add(new Tuple<int, int>(column, line));
+                        pawnsToReplace.AddRange(tmp);
+                    }
+                }
+                foreach (var pair in pawnsToReplace)
+                {
+                    LogicBoard[pair.Item1, pair.Item2] = color;
+                    main.UpdateBoard(pair, isWhite);
+                }
+                this.isWhite = !isWhite;
+                return true;
+            }
+            return false;
         }
 
         public Tuple<char, int> getNextMove(int[,] game, int level, bool whiteTurn)
