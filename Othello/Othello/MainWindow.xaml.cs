@@ -146,6 +146,7 @@ namespace Othello
             //placePawn(x, y, TileState.White, tile);
         }
 
+        /*
         private void placePawn(int x, int y, TileState c, Rectangle tile)
         {
             BitmapImage b = new BitmapImage();
@@ -157,6 +158,7 @@ namespace Othello
             tile.Fill = new ImageBrush(b);            
 
         }
+        */
         
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
