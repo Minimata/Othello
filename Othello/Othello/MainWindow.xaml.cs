@@ -63,11 +63,13 @@ namespace Othello
                 {
                     UIElement tile = CreateTile(i, j);
                     DynamicGrid.Children.Add(tile);
+
                 }
             }
 
             // Display grid into a Window
             plate.Children.Add(DynamicGrid);
+
         }
 
         private UIElement CreateTile(int x, int y)
@@ -136,7 +138,24 @@ namespace Othello
             Rectangle tile = (Rectangle) sender;
             int x = Grid.GetColumn(tile);
             int y = Grid.GetRow(tile);
+            Debug.WriteLine(x + " : " + y);
+
             board.TileClicked(x, y);
+
+
+            //placePawn(x, y, TileState.White, tile);
+        }
+
+        private void placePawn(int x, int y, TileState c, Rectangle tile)
+        {
+            BitmapImage b = new BitmapImage();
+            b.BeginInit();
+            b.UriSource = new Uri("oreo.png", UriKind.Relative);
+            b.EndInit();
+
+            Image image = new Image();
+            tile.Fill = new ImageBrush(b);            
+
         }
         
 
