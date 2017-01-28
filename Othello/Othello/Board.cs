@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Windows.Documents;
 using OthelloConsole;
 
@@ -7,11 +8,6 @@ namespace Othello
 {
     class Board : IPlayable
     {
-        private MainWindow main;
-        private bool isWhite;
-        private int whiteScore;
-        private int blackScore;
-        public int NumTiles { get; private set; }
         public enum TileState
         {
             Empty = 0,
@@ -47,6 +43,11 @@ namespace Othello
 
         private List<Vector2i> directions;
         public int[,] LogicBoard { get; set; }
+        private MainWindow main;
+        private bool isWhite;
+        public int WhiteScore { get; set; }
+       public int BlackScore { get; set; }
+        public int NumTiles { get; }
 
         public Board(int numTiles = 8, MainWindow parent = null)
         {
@@ -75,12 +76,15 @@ namespace Othello
             LogicBoard[half, half] = (int) TileState.White;
             LogicBoard[half - 1, half] = (int) TileState.Black;
             LogicBoard[half, half - 1] = (int) TileState.Black;
-            blackScore = whiteScore = 2;
+            BlackScore = WhiteScore = 2;
         }
 
         public void TileClicked(int column, int line)
         {
-            playMove(column, line, isWhite);
+            if (playMove(column, line, isWhite))
+            {
+                this.isWhite = !isWhite;
+            }
         }
         
         public bool isPlayable(int column, int line, bool isWhite)
@@ -155,13 +159,13 @@ namespace Othello
                 //Keeping the scor in place
                 if (isWhite)
                 {
-                    blackScore += pawnsToReplace.Count;
-                    whiteScore -= pawnsToReplace.Count - 1;
+                    BlackScore += pawnsToReplace.Count;
+                    WhiteScore -= pawnsToReplace.Count - 1;
                 }
                 else
                 {
-                    whiteScore += pawnsToReplace.Count;
-                    blackScore -= pawnsToReplace.Count - 1;
+                    WhiteScore += pawnsToReplace.Count;
+                    BlackScore -= pawnsToReplace.Count - 1;
                 }
 
                 //We then update the logic board based on the pawns to replace
@@ -170,7 +174,6 @@ namespace Othello
                     LogicBoard[pair.Item1, pair.Item2] = color;
                     main.UpdateBoard(pair, isWhite);
                 }
-                this.isWhite = !isWhite;
                 return true;
             }
             return false;
@@ -183,12 +186,17 @@ namespace Othello
 
         public int getWhiteScore()
         {
-            throw new NotImplementedException();
+            return WhiteScore;
         }
 
         public int getBlackScore()
         {
-            throw new NotImplementedException();
+            return BlackScore;
+        }
+
+        public bool isWhiteTurn()
+        {
+            return isWhite;
         }
     }
 }

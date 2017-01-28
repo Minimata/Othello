@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace Othello
@@ -102,12 +103,10 @@ namespace Othello
                             rect.Fill = Brushes.DarkGreen;
                             break;
                         case 1:
-                            rect.Fill = Brushes.White;
+                            placePawn(rect, true);
                             break;
                         case -1:
-                            rect.Fill = Brushes.Black;
-                            break;
-                        default:
+                            placePawn(rect, false);
                             break;
                     }
                 }
@@ -120,15 +119,19 @@ namespace Othello
                 .Cast<Rectangle>()
                 .First(e => Grid.GetColumn(e) == pair.Item1 && Grid.GetRow(e) == pair.Item2);
 
-            if (isWhite)
-            {
-                rect.Fill = Brushes.White;
-            }
-            else
-            {
-                rect.Fill = Brushes.Black;
-            }
+            placePawn(rect, isWhite);
+        }
+
+        private void placePawn(Rectangle tile, bool isWhite)
+        {
+            BitmapImage b = new BitmapImage();
+
+            b.BeginInit();
+            if(isWhite) b.UriSource = new Uri("../../../image/cookie.png", UriKind.Relative);
+            else b.UriSource = new Uri("../../../image/oreo.png", UriKind.Relative);
+            b.EndInit();
             
+            tile.Fill = new ImageBrush(b);
         }
 
         private void tile_MouseDown(object sender, MouseButtonEventArgs e)
@@ -136,27 +139,9 @@ namespace Othello
             Rectangle tile = (Rectangle) sender;
             int x = Grid.GetColumn(tile);
             int y = Grid.GetRow(tile);
-            Debug.WriteLine(x + " : " + y);
 
             board.TileClicked(x, y);
-
-
-            //placePawn(x, y, TileState.White, tile);
         }
-
-        /*
-        private void placePawn(int x, int y, TileState c, Rectangle tile)
-        {
-            BitmapImage b = new BitmapImage();
-            b.BeginInit();
-            b.UriSource = new Uri("oreo.png", UriKind.Relative);
-            b.EndInit();
-
-            Image image = new Image();
-            tile.Fill = new ImageBrush(b);            
-
-        }
-        */
         
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -167,16 +152,25 @@ namespace Othello
             }
         }
 
-        private void RPressed(object sender, KeyEventArgs e)
+        private void RPressed(object sender = null, KeyEventArgs e = null)
         {
             board.Reset();
             WholeBoardUpdate(board.LogicBoard);
         }
 
-        private void EscPressed(object sender, KeyEventArgs e)
+        private void EscPressed(object sender = null, KeyEventArgs e = null)
         {
             Close();
         }
-        
+
+        private void RPressed(object sender, MouseButtonEventArgs e)
+        {
+            RPressed();
+        }
+
+        private void EscPressed(object sender, MouseButtonEventArgs e)
+        {
+            EscPressed();
+        }
     }
 }
