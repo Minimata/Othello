@@ -9,6 +9,8 @@ namespace Othello
     {
         private MainWindow main;
         private bool isWhite;
+        private int whiteScore;
+        private int blackScore;
         public int NumTiles { get; private set; }
         public enum TileState
         {
@@ -73,6 +75,7 @@ namespace Othello
             LogicBoard[half, half] = (int) TileState.White;
             LogicBoard[half - 1, half] = (int) TileState.Black;
             LogicBoard[half, half - 1] = (int) TileState.Black;
+            blackScore = whiteScore = 2;
         }
 
         public void TileClicked(int column, int line)
@@ -97,7 +100,8 @@ namespace Othello
                 {
                     Vector2i tile = sideTile + dir;
                     while (tile.IsValid(NumTiles) && 
-                        LogicBoard[tile.x, tile.y] != color)
+                        LogicBoard[tile.x, tile.y] != color &&
+                        LogicBoard[tile.x, tile.y] != 0)
                     {
                         tile = tile + dir;
                     }
@@ -113,17 +117,25 @@ namespace Othello
 
         public bool playMove(int column, int line, bool isWhite)
         {
+            //Check if the move can be done
             if (isPlayable(column, line, isWhite))
             {
+                //Settling an integer for entering color in the logic state board.
                 int color = (int)TileState.Black;
                 if (isWhite) color = (int)TileState.White;
+
+                //Settling the actual position for vectorial operations and a list of pawns to replace
                 Vector2i pos = new Vector2i(column, line);
                 List<Tuple<int, int>> pawnsToReplace = new List<Tuple<int, int>>();
+
 
                 foreach (var dir in directions)
                 {
                     List<Tuple<int, int>> tmp = new List<Tuple<int, int>>();
                     Vector2i tile = pos + dir;
+
+                    //While we're in the board and we can find an opposite color pawn in a direction, we add positions to add a pawn to later, and we iterate until we reach 
+                    //the end of the board or pawn of our color.
                     while (tile.IsValid(NumTiles) &&
                         LogicBoard[tile.x, tile.y] != color &&
                         LogicBoard[tile.x, tile.y] != 0)
@@ -131,12 +143,28 @@ namespace Othello
                         tmp.Add(new Tuple<int, int>(tile.x, tile.y));
                         tile = tile + dir;
                     }
+
+                    //If we actually ended up on a pawn of our color instead of finishing off the board, then it's a valid line of pawns to replace.
                     if (tile.IsValid(NumTiles) && LogicBoard[tile.x, tile.y] == color)
                     {
                         pawnsToReplace.Add(new Tuple<int, int>(column, line));
                         pawnsToReplace.AddRange(tmp);
                     }
                 }
+
+                //Keeping the scor in place
+                if (isWhite)
+                {
+                    blackScore += pawnsToReplace.Count;
+                    whiteScore -= pawnsToReplace.Count - 1;
+                }
+                else
+                {
+                    whiteScore += pawnsToReplace.Count;
+                    blackScore -= pawnsToReplace.Count - 1;
+                }
+
+                //We then update the logic board based on the pawns to replace
                 foreach (var pair in pawnsToReplace)
                 {
                     LogicBoard[pair.Item1, pair.Item2] = color;
