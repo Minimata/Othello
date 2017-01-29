@@ -353,11 +353,18 @@ namespace Othello
         public void Load()
         {
             List<string> lines = File.ReadAllLines(filename).ToList();
+
             int white = Convert.ToInt32(lines[0]);
             if (white == 1) isWhite = true;
             else isWhite = false;
-            NumTiles = Convert.ToInt32(lines[1]);
             lines.RemoveAt(0);
+
+            NumTiles = Convert.ToInt32(lines[0]);
+            lines.RemoveAt(0);
+
+            WhiteTime = Convert.ToInt32(lines[0]);
+            lines.RemoveAt(0);
+            BlackTime = Convert.ToInt32(lines[0]);
             lines.RemoveAt(0);
             
             for (int i = 0; i < NumTiles; i++)
@@ -378,6 +385,8 @@ namespace Othello
             if (isWhite) lines.Add("1");
             else lines.Add("0");
             lines.Add(NumTiles.ToString());
+            lines.Add(BlackTime.ToString());
+            lines.Add(WhiteTime.ToString());
 
             for (int i = 0; i < NumTiles; i++)
             {
