@@ -123,7 +123,7 @@ namespace Othello
         {
             isWhite = false;
 
-            blackTime = whiteTime = 0;
+            BlackTime = WhiteTime = 0;
             _timer = new Timer(1000);
             _timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
             _timer.Enabled = true;
@@ -136,6 +136,11 @@ namespace Othello
             LogicBoard[half - 1, half] = (int) TileState.Black;
             LogicBoard[half, half - 1] = (int) TileState.Black;
             BlackScore = WhiteScore = 2;
+
+            NotifyPropertyChanged("WhiteTime");
+            NotifyPropertyChanged("BlackTime");
+            NotifyPropertyChanged("BlackScore");
+            NotifyPropertyChanged("WhiteScore");
         }
 
         private int CountValidPlay(bool isWhite)
@@ -183,9 +188,7 @@ namespace Othello
                 {
                     EndGame();
                 }
-                else{
-                    Console.WriteLine("COMBO");
-                }
+
                 main.SetImgTurn(isWhite);
             }
 
