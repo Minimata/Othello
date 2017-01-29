@@ -186,6 +186,11 @@ namespace Othello
             }
         }
 
+        public void DisplayWinText(string text)
+        {
+            tboxWin.Text = text;
+        }
+
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
