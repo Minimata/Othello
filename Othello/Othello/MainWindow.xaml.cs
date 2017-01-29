@@ -136,6 +136,14 @@ namespace Othello
             
             tile.Fill = new ImageBrush(b);
             DataContext = board;
+
+            BitmapImage t = new BitmapImage();
+            t.BeginInit();
+            if (isWhite) t.UriSource = new Uri("../../../image/oreo.png", UriKind.Relative);
+            else t.UriSource = new Uri("../../../image/cookie.png", UriKind.Relative);
+            t.EndInit();
+
+            imgTurn.Fill = new ImageBrush(t);
         }
 
         private void Tile_MouseDown(object sender, MouseButtonEventArgs e)

@@ -5,6 +5,8 @@ using System.Windows.Documents;
 using OthelloConsole;
 using System.ComponentModel;
 using System.Timers;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Othello
 {
@@ -82,6 +84,20 @@ namespace Othello
         private int whiteTime;
         public int WhiteTime { get; set; }
 
+        private ImageSource turnImage;
+        public ImageSource TurnImage
+        {
+            get
+            {
+                return turnImage;
+            }
+            set
+            {
+                turnImage = value;
+                NotifyPropertyChanged("TurnImage");
+            }
+        }
+
 
         public Board(int numTiles = 8, MainWindow parent = null)
         {
@@ -98,12 +114,6 @@ namespace Othello
             directions.Add(new Vector2i(-1, 0));
             directions.Add(new Vector2i(-1, 1));
             directions.Add(new Vector2i(-1, -1));
-        }
-
-        private void Chrono(bool isWhite)
-        {
-
-
         }
 
         public void Reset()
@@ -222,13 +232,17 @@ namespace Othello
                 //Keeping the scor in place
                 if (isWhite)
                 {
-                    BlackScore += pawnsToReplace.Count;
+                    BlackScore += pawnsToReplace.Count - 1;
                     WhiteScore -= pawnsToReplace.Count - 1;
+
+                    //main.imgTurn.Source = new BitmapImage(new Uri("../../../image/oreo.png", UriKind.Relative));
                 }
                 else
                 {
                     WhiteScore += pawnsToReplace.Count;
                     BlackScore -= pawnsToReplace.Count - 1;
+
+                    //main.imgTurn.Source = new BitmapImage(new Uri("../../../image/cookie.png", UriKind.Relative));
                 }
 
                 //We then update the logic board based on the pawns to replace
@@ -237,6 +251,7 @@ namespace Othello
                     LogicBoard[pair.Item1, pair.Item2] = color;
                     main.UpdateBoard(pair, isWhite);
                 }
+
                 
 
                 return true;
