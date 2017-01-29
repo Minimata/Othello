@@ -42,8 +42,8 @@
                 <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbxBlackTimer" TextWrapping="Wrap" Text="{Binding BlackTime}"/>
             </Grid>
             <Button x:Name="btnRestart" Content="Restart" Click="RPressed" />
-            <Button x:Name="btnSave" Content="Save"/>
-            <Button x:Name="btnLoad" Content="Load"/>
+            <Button x:Name="btnSave" Content="Save" Click="Save" />
+            <Button x:Name="btnLoad" Content="Load" Click="Load"/>
             <Button x:Name="btnQuit" Content="Quit" Click="EscPressed" />
             <Rectangle Name="imgTurn" Fill="Beige" HorizontalAlignment="Left"
                    Height="200" 
