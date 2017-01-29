@@ -180,6 +180,9 @@ namespace Othello
                 {
                     EndGame();
                 }
+                else{
+                    Console.WriteLine("COMBO");
+                }
                 main.SetImgTurn(isWhite);
             }
 
@@ -192,7 +195,7 @@ namespace Othello
                 //WHITEPOWER
                 Console.WriteLine("WHITEPOWER");
             }
-            else if(getWhiteScore() > getBlackScore())
+            else if(getWhiteScore() < getBlackScore())
             {
                 //BLACKPOWER
                 Console.WriteLine("BLACKPOWER");
