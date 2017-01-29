@@ -9,6 +9,8 @@ using System.Linq;
 using System.Timers;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace Othello
 {
@@ -81,7 +83,8 @@ namespace Othello
             }
         }
         public int NumTiles { get; private set;  }
-        private Timer _timer;
+        private DispatcherTimer _timer;
+        private Stopwatch stopWatch;
         private int blackTime;
         public int BlackTime { get; set; }
         private int whiteTime;
@@ -124,9 +127,13 @@ namespace Othello
             isWhite = false;
 
             BlackTime = WhiteTime = 0;
-            _timer = new Timer(1);
-            _timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
-            _timer.Enabled = true;
+            _timer = new DispatcherTimer();
+            _timer.Tick += _timer_Elapsed;
+            _timer.Interval = new TimeSpan(0, 0, 0, 0,1);
+            _timer.Start();
+
+            stopWatch = new Stopwatch();
+            stopWatch.Start();
 
 
             LogicBoard = new int[NumTiles, NumTiles];
@@ -160,17 +167,19 @@ namespace Othello
             return countValidPlay;
         }
 
-        private void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void _timer_Elapsed(object sender, EventArgs e)
         {
-            
+            Console.WriteLine("tick" + stopWatch.ElapsedMilliseconds);
             if (isWhite)
             {
-                WhiteTime++;
+                WhiteTime += (int)stopWatch.ElapsedMilliseconds;
+                stopWatch.Restart();
                 NotifyPropertyChanged("WhiteTime");
             }
             else
             {
-                BlackTime++;
+                BlackTime += (int)stopWatch.ElapsedMilliseconds;
+                stopWatch.Restart();
                 NotifyPropertyChanged("BlackTime");
                 
             }
