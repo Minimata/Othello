@@ -229,21 +229,22 @@ namespace Othello
                     }
                 }
 
+
+
                 //Keeping the scor in place
+                /*
                 if (isWhite)
                 {
-                    BlackScore += pawnsToReplace.Count - 1;
+                    BlackScore += pawnsToReplace.Count - 2;
                     WhiteScore -= pawnsToReplace.Count - 1;
 
-                    //main.imgTurn.Source = new BitmapImage(new Uri("../../../image/oreo.png", UriKind.Relative));
                 }
                 else
                 {
-                    WhiteScore += pawnsToReplace.Count;
+                    WhiteScore += pawnsToReplace.Count - 2;
                     BlackScore -= pawnsToReplace.Count - 1;
 
-                    //main.imgTurn.Source = new BitmapImage(new Uri("../../../image/cookie.png", UriKind.Relative));
-                }
+                }*/
 
                 //We then update the logic board based on the pawns to replace
                 foreach (var pair in pawnsToReplace)
@@ -251,6 +252,9 @@ namespace Othello
                     LogicBoard[pair.Item1, pair.Item2] = color;
                     main.UpdateBoard(pair, isWhite);
                 }
+
+                BlackScore = getBlackScore();
+                WhiteScore = getWhiteScore();
 
                 
 
@@ -266,12 +270,28 @@ namespace Othello
 
         public int getWhiteScore()
         {
-            return WhiteScore;
+            int score = 0;
+            foreach(var i in LogicBoard)
+            {
+                if(i == 1)
+                {
+                    score++;
+                }
+            }
+            return score;
         }
 
         public int getBlackScore()
         {
-            return BlackScore;
+            int score = 0;
+            foreach (var i in LogicBoard)
+            {
+                if (i == -1)
+                {
+                    score++;
+                }
+            }
+            return score;
         }
 
         public bool isWhiteTurn()
