@@ -124,6 +124,7 @@ namespace Othello
 
         public void Reset()
         {
+            main.DisplayWinText("");
             isWhite = false;
 
             BlackTime = WhiteTime = 0;
@@ -181,7 +182,6 @@ namespace Othello
                 BlackTime += (int)stopWatch.ElapsedMilliseconds;
                 stopWatch.Restart();
                 NotifyPropertyChanged("BlackTime");
-                
             }
         }
 
@@ -208,16 +208,16 @@ namespace Othello
             if(getWhiteScore() > getBlackScore())
             {
                 //WHITEPOWER
-                Console.WriteLine("WHITEPOWER");
+                main.DisplayWinText("WHITEPOWER");
             }
             else if(getWhiteScore() < getBlackScore())
             {
                 //BLACKPOWER
-                Console.WriteLine("BLACKPOWER");
+                main.DisplayWinText("BLACKPOWER");
             }
             else
             {
-                Console.WriteLine("NELSONMANDELA");
+                main.DisplayWinText("NELSONMANDELA");
             }
         }
 
@@ -361,6 +361,7 @@ namespace Othello
 
         public void Load()
         {
+            main.DisplayWinText("");
             List<string> lines = File.ReadAllLines(filename).ToList();
 
             int white = Convert.ToInt32(lines[0]);

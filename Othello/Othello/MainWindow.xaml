@@ -49,6 +49,7 @@
                    Height="200" 
                    Width="200"     >
             </Rectangle>
+            <TextBox x:Name="tboxWin" Height="33" TextWrapping="Wrap" Text="" TextAlignment="Center" FontWeight="Bold" FontFamily="Consolas" FontSize="26.667"/>
 
 
         </StackPanel>
