@@ -177,17 +177,19 @@ namespace Othello
         {
             Close();
         }
-
-        private void RPressed(object sender, MouseButtonEventArgs e)
-        {
-            RPressed();
-        }
-
-        private void EscPressed(object sender, MouseButtonEventArgs e)
-        {
-            EscPressed();
-        }
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RPressed(object sender, RoutedEventArgs e)
+        {
+            board.Reset();
+            WholeBoardUpdate(board.LogicBoard);
+        }
+
+        private void EscPressed(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

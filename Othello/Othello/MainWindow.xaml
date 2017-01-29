@@ -19,6 +19,7 @@
               Height="{Binding ActualHeight, ElementName=container}" Width="{Binding ActualHeight, ElementName=plate}" />
         <StackPanel x:Name="UIContainer" Grid.Column="1"  HorizontalAlignment="Right" Width="200">
             <TextBox x:Name="ScoreTBox" Height="33" TextWrapping="Wrap" Text="Score" TextAlignment="Center" FontWeight="Bold" FontFamily="Consolas" FontSize="26.667"/>
+            
             <Grid x:Name="Scores" Height="100">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*">
@@ -40,14 +41,16 @@
                 <TextBox Grid.Column="0" Grid.Row="2" x:Name="tbxWhiteTimer" TextWrapping="Wrap" Text="{Binding WhiteTime}"/>
                 <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbxBlackTimer" TextWrapping="Wrap" Text="{Binding BlackTime}"/>
             </Grid>
-            <Button x:Name="btnRestart" Content="Restart" MouseDown="RPressed" />
-            <Button x:Name="btnQuit" Content="Quit" MouseDown="EscPressed" />
+            <Button x:Name="btnRestart" Content="Restart" Click="RPressed" />
+            <Button x:Name="btnSave" Content="Save"/>
+            <Button x:Name="btnLoad" Content="Load"/>
+            <Button x:Name="btnQuit" Content="Quit" Click="EscPressed" />
             <Rectangle Name="imgTurn" Fill="Beige" HorizontalAlignment="Left"
                    Height="200" 
                    Width="200"     >
             </Rectangle>
 
-            
+
         </StackPanel>
     </Grid>
 </Window>

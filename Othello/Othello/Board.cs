@@ -228,23 +228,7 @@ namespace Othello
                         pawnsToReplace.AddRange(tmp);
                     }
                 }
-
-
-
-                //Keeping the scor in place
-                /*
-                if (isWhite)
-                {
-                    BlackScore += pawnsToReplace.Count - 2;
-                    WhiteScore -= pawnsToReplace.Count - 1;
-
-                }
-                else
-                {
-                    WhiteScore += pawnsToReplace.Count - 2;
-                    BlackScore -= pawnsToReplace.Count - 1;
-
-                }*/
+                
 
                 //We then update the logic board based on the pawns to replace
                 foreach (var pair in pawnsToReplace)
