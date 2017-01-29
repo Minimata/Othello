@@ -30,15 +30,17 @@ namespace Othello
             BoardThickness = 30;
             board = new Board(parent: this);
 
-            createBoard(board, BoardThickness);
+            CreateBoard(board, BoardThickness);
             WholeBoardUpdate(board.LogicBoard);
 
             KeyEvents = new Dictionary<Key, KeyPressed>();
             KeyEvents.Add(Key.R, RPressed);
             KeyEvents.Add(Key.Escape, EscPressed);
+
+            DataContext = board;
         }
 
-        private void createBoard(Board board, int thick = 30)
+        private void CreateBoard(Board board, int thick = 30)
         {
             // Create the Grid
             DynamicGrid = new Grid();
@@ -82,14 +84,14 @@ namespace Othello
             Grid.SetColumn(tile, x);
             Grid.SetRow(tile, y);
 
-            tile.MouseDown += this.tile_MouseDown;
+            tile.MouseDown += this.Tile_MouseDown;
 
             return tile;
         }
 
         public void WholeBoardUpdate(int[,] logicBoard)
         {
-            createBoard(board, BoardThickness);
+            CreateBoard(board, BoardThickness);
             for (int i = 0; i < logicBoard.GetLength(0); i++)
             {
                 for (int j = 0; j < logicBoard.GetLength(1); j++)
@@ -103,10 +105,10 @@ namespace Othello
                             rect.Fill = Brushes.DarkGreen;
                             break;
                         case 1:
-                            placePawn(rect, true);
+                            PlacePawn(rect, true);
                             break;
                         case -1:
-                            placePawn(rect, false);
+                            PlacePawn(rect, false);
                             break;
                     }
                 }
@@ -119,10 +121,10 @@ namespace Othello
                 .Cast<Rectangle>()
                 .First(e => Grid.GetColumn(e) == pair.Item1 && Grid.GetRow(e) == pair.Item2);
 
-            placePawn(rect, isWhite);
+            PlacePawn(rect, isWhite);
         }
 
-        private void placePawn(Rectangle tile, bool isWhite)
+        private void PlacePawn(Rectangle tile, bool isWhite)
         {
             BitmapImage b = new BitmapImage();
 
@@ -134,7 +136,7 @@ namespace Othello
             tile.Fill = new ImageBrush(b);
         }
 
-        private void tile_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Tile_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Rectangle tile = (Rectangle) sender;
             int x = Grid.GetColumn(tile);
