@@ -41,7 +41,8 @@
                 <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbxBlackTimer" TextWrapping="Wrap" Text="{Binding BlackTimer}"/>
             </Grid>
             <Button x:Name="btnRestart" Content="Restart" MouseDown="RPressed" />
-            <Button x:Name="btnQuit" Content="Restart" MouseDown="EscPressed" />
+            <Button x:Name="btnQuit" Content="Quit" MouseDown="EscPressed" />
+            <Image x:Name="imgTurn" Source="{Binding TurnImage}" />
         </StackPanel>
     </Grid>
 </Window>

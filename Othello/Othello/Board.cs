@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Windows.Documents;
 using OthelloConsole;
+using System.ComponentModel;
 
 namespace Othello
 {
-    class Board : IPlayable
+    class Board : IPlayable, INotifyPropertyChanged
     {
         public enum TileState
         {
@@ -45,9 +46,57 @@ namespace Othello
         public int[,] LogicBoard { get; set; }
         private MainWindow main;
         private bool isWhite;
-        public int WhiteScore { get; set; }
-       public int BlackScore { get; set; }
+        private int whiteScore;
+        public int WhiteScore
+        {
+
+            get
+            {
+                return whiteScore;
+            }
+
+            set
+            {
+                whiteScore = value;
+                NotifyPropertyChanged("WhiteScore");
+            }
+        }
+        private int blackScore;
+       public int BlackScore {
+            get
+            {
+                return blackScore;
+            }
+
+            set
+            {
+                blackScore = value;
+                NotifyPropertyChanged("BlackScore");
+            }
+        }
         public int NumTiles { get; }
+        public TimeSpan BlackTimer { get; set; }
+        public TimeSpan WhiteTimer { get; set; }
+
+
+        private DateTime chrono;
+
+        
+
+        private void Chrono(bool isWhite)
+        {
+            
+            if (isWhite)
+            {
+                WhiteTimer += (DateTime.Now - chrono);
+            }
+            else
+            {
+                BlackTimer += (DateTime.Now - chrono);
+            }
+
+            chrono = DateTime.Now;
+        }
 
         public Board(int numTiles = 8, MainWindow parent = null)
         {
@@ -69,6 +118,10 @@ namespace Othello
         public void Reset()
         {
             isWhite = false;
+
+            BlackTimer = new TimeSpan();
+            WhiteTimer = new TimeSpan();
+
 
             LogicBoard = new int[NumTiles, NumTiles];
             int half = NumTiles/2;
@@ -174,6 +227,8 @@ namespace Othello
                     LogicBoard[pair.Item1, pair.Item2] = color;
                     main.UpdateBoard(pair, isWhite);
                 }
+                
+
                 return true;
             }
             return false;
@@ -197,6 +252,15 @@ namespace Othello
         public bool isWhiteTurn()
         {
             return isWhite;
+        }
+
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void NotifyPropertyChanged(string proprietyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(proprietyName));
         }
     }
 }

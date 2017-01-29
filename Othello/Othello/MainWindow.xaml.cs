@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -36,7 +37,6 @@ namespace Othello
             KeyEvents = new Dictionary<Key, KeyPressed>();
             KeyEvents.Add(Key.R, RPressed);
             KeyEvents.Add(Key.Escape, EscPressed);
-
             DataContext = board;
         }
 
@@ -113,6 +113,7 @@ namespace Othello
                     }
                 }
             }
+            
         }
 
         public void UpdateBoard(Tuple<int, int> pair, bool isWhite)
@@ -134,6 +135,7 @@ namespace Othello
             b.EndInit();
             
             tile.Fill = new ImageBrush(b);
+            DataContext = board;
         }
 
         private void Tile_MouseDown(object sender, MouseButtonEventArgs e)
@@ -152,6 +154,9 @@ namespace Othello
             {
                 KeyEvents[e.Key](sender, e);
             }
+            
+            Debug.Write(board.BlackScore);
+
         }
 
         private void RPressed(object sender = null, KeyEventArgs e = null)
@@ -174,5 +179,7 @@ namespace Othello
         {
             EscPressed();
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
