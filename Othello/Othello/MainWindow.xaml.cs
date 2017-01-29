@@ -139,10 +139,15 @@ namespace Othello
             tile.Fill = new ImageBrush(b);
             DataContext = board;
 
+            
+        }
+
+        public void SetImgTurn(bool isWhite)
+        {
             BitmapImage t = new BitmapImage();
             t.BeginInit();
-            if (isWhite) t.UriSource = new Uri("../../../image/oreo.png", UriKind.Relative);
-            else t.UriSource = new Uri("../../../image/cookie.png", UriKind.Relative);
+            if (isWhite) t.UriSource = new Uri("../../../image/cookie.png", UriKind.Relative);
+            else t.UriSource = new Uri("../../../image/oreo.png", UriKind.Relative);
             t.EndInit();
 
             imgTurn.Fill = new ImageBrush(t);

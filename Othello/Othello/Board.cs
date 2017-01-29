@@ -138,12 +138,28 @@ namespace Othello
             BlackScore = WhiteScore = 2;
         }
 
+        private int CountValidPlay(bool isWhite)
+        {
+            int countValidPlay = 0;
+            for(int i = 0; i < LogicBoard.GetLength(0)-1; i++)
+            {
+                for(int j = 0; j < LogicBoard.GetLength(1)-1; j++)
+                {
+                    if (isPlayable(i, j, isWhite))
+                    {
+                        countValidPlay++;
+                    }
+                }
+            }
+            Console.WriteLine("Nombre de coup valide : " + countValidPlay);
+            return countValidPlay;
+        }
+
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             
             if (isWhite)
             {
-                Console.WriteLine(WhiteTime);
                 WhiteTime++;
                 NotifyPropertyChanged("WhiteTime");
             }
@@ -159,7 +175,34 @@ namespace Othello
         {
             if (playMove(column, line, isWhite))
             {
-                this.isWhite = !isWhite;
+                if (CountValidPlay(!isWhite) > 0)
+                {
+                    this.isWhite = !isWhite;
+                }
+                else if(CountValidPlay(isWhite) == 0)
+                {
+                    EndGame();
+                }
+                main.SetImgTurn(isWhite);
+            }
+
+        }
+
+        public void EndGame()
+        {
+            if(getWhiteScore() > getBlackScore())
+            {
+                //WHITEPOWER
+                Console.WriteLine("WHITEPOWER");
+            }
+            else if(getWhiteScore() > getBlackScore())
+            {
+                //BLACKPOWER
+                Console.WriteLine("BLACKPOWER");
+            }
+            else
+            {
+                Console.WriteLine("NELSONMANDELA");
             }
         }
 
