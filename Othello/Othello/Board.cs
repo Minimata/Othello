@@ -157,7 +157,6 @@ namespace Othello
             
             if (isWhite)
             {
-                Console.WriteLine(WhiteTime);
                 WhiteTime++;
                 NotifyPropertyChanged("WhiteTime");
             }
@@ -179,9 +178,9 @@ namespace Othello
                 }
                 else if(CountValidPlay(isWhite) == 0)
                 {
-
+                    EndGame();
                 }
-
+                main.SetImgTurn(isWhite);
             }
 
         }
