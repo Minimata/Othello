@@ -222,5 +222,15 @@ namespace Othello
         {
             Close();
         }
+
+        private void Save(object sender, RoutedEventArgs e)
+        {
+            board.Save();
+        }
+
+        private void Load(object sender, RoutedEventArgs e)
+        {
+            board.Load();
+        }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Windows.Documents;
 using OthelloConsole;
 using System.ComponentModel;
+using System.Linq;
 using System.Timers;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -50,6 +52,7 @@ namespace Othello
         private MainWindow main;
         private bool isWhite;
         private int whiteScore;
+        private const string filename = "score.txt";
         public int WhiteScore
         {
 
@@ -77,7 +80,7 @@ namespace Othello
                 NotifyPropertyChanged("BlackScore");
             }
         }
-        public int NumTiles { get; }
+        public int NumTiles { get; private set;  }
         private Timer _timer;
         private int blackTime;
         public int BlackTime { get; set; }
@@ -342,6 +345,47 @@ namespace Othello
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(proprietyName));
+        }
+
+        public void Load()
+        {
+            List<string> lines = File.ReadAllLines(filename).ToList();
+            int white = Convert.ToInt32(lines[0]);
+            if (white == 1) isWhite = true;
+            else isWhite = false;
+            NumTiles = Convert.ToInt32(lines[1]);
+            lines.RemoveAt(0);
+            lines.RemoveAt(0);
+            
+            for (int i = 0; i < NumTiles; i++)
+            {
+                for (int j = 0; j < NumTiles; j++)
+                {
+                    int tile = Convert.ToInt32(lines[NumTiles*i + j]);
+                    LogicBoard[i, j] = tile;
+                }
+            }
+            main.WholeBoardUpdate(LogicBoard);
+        }
+
+        public void Save()
+        {
+            List<string> lines = new List<string>();
+
+            if (isWhite) lines.Add("1");
+            else lines.Add("0");
+            lines.Add(NumTiles.ToString());
+
+            for (int i = 0; i < NumTiles; i++)
+            {
+                for (int j = 0; j < NumTiles; j++)
+                {
+                    int tile = LogicBoard[i, j];
+                    lines.Add(tile.ToString());
+                }
+            }
+
+            File.WriteAllLines(filename, lines);
         }
     }
 }
