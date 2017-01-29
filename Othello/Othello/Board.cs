@@ -124,7 +124,7 @@ namespace Othello
             isWhite = false;
 
             BlackTime = WhiteTime = 0;
-            _timer = new Timer(1000);
+            _timer = new Timer(1);
             _timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
             _timer.Enabled = true;
 
