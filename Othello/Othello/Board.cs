@@ -149,6 +149,7 @@ namespace Othello
             NotifyPropertyChanged("BlackTime");
             NotifyPropertyChanged("BlackScore");
             NotifyPropertyChanged("WhiteScore");
+            main.SetImgTurn(isWhite);
         }
 
         private int CountValidPlay(bool isWhite)
@@ -164,13 +165,11 @@ namespace Othello
                     }
                 }
             }
-            Console.WriteLine("Nombre de coup valide : " + countValidPlay);
             return countValidPlay;
         }
 
         private void _timer_Elapsed(object sender, EventArgs e)
         {
-            Console.WriteLine("tick" + stopWatch.ElapsedMilliseconds);
             if (isWhite)
             {
                 WhiteTime += (int)stopWatch.ElapsedMilliseconds;
