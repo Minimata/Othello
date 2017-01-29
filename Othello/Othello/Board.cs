@@ -159,6 +159,12 @@ namespace Othello
                 this.isWhite = !isWhite;
             }
         }
+
+        public bool isTilePlayable(int column, int line)
+        {
+            return (isPlayable(column, line, isWhite));
+            
+        }
         
         public bool isPlayable(int column, int line, bool isWhite)
         {

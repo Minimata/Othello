@@ -85,6 +85,8 @@ namespace Othello
             Grid.SetRow(tile, y);
 
             tile.MouseDown += this.Tile_MouseDown;
+            tile.MouseEnter += this.Tile_Enter;
+            tile.MouseLeave += this.Tile_Leave;
 
             return tile;
         }
@@ -154,7 +156,31 @@ namespace Othello
 
             board.TileClicked(x, y);
         }
-        
+
+        private void Tile_Enter(object sender, EventArgs e)
+        {
+            Rectangle tile = (Rectangle)sender;
+            int x = Grid.GetColumn(tile);
+            int y = Grid.GetRow(tile);
+
+            if(board.isTilePlayable(x, y))
+            {
+                tile.Fill = Brushes.ForestGreen;
+            }
+        }
+
+        private void Tile_Leave(object sender, EventArgs e)
+        {
+            Rectangle tile = (Rectangle)sender;
+            int x = Grid.GetColumn(tile);
+            int y = Grid.GetRow(tile);
+
+            if (tile.Fill == Brushes.ForestGreen)
+            {
+                tile.Fill = Brushes.DarkGreen;
+            }
+        }
+
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
