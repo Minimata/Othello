@@ -37,8 +37,8 @@
                 <TextBox Grid.Column="1" Grid.Row="0"  x:Name="BlackTBox" Text="Black" TextAlignment="Center" Height="26" Width="100"/>
                 <TextBox Grid.Column="0" Grid.Row="1" x:Name="tbxWhiteScore" TextWrapping="Wrap" Text="{Binding WhiteScore}"/>
                 <TextBox Grid.Column="1" Grid.Row="1" x:Name="tbxBlackScore" TextWrapping="Wrap" Text="{Binding BlackScore}"/>
-                <TextBox Grid.Column="0" Grid.Row="2" x:Name="tbxWhiteTimer" TextWrapping="Wrap" Text="{Binding WhiteTimer}"/>
-                <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbxBlackTimer" TextWrapping="Wrap" Text="{Binding BlackTimer}"/>
+                <TextBox Grid.Column="0" Grid.Row="2" x:Name="tbxWhiteTimer" TextWrapping="Wrap" Text="{Binding WhiteTime}"/>
+                <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbxBlackTimer" TextWrapping="Wrap" Text="{Binding BlackTime}"/>
             </Grid>
             <Button x:Name="btnRestart" Content="Restart" MouseDown="RPressed" />
             <Button x:Name="btnQuit" Content="Quit" MouseDown="EscPressed" />

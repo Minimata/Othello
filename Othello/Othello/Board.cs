@@ -4,6 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Windows.Documents;
 using OthelloConsole;
 using System.ComponentModel;
+using System.Timers;
 
 namespace Othello
 {
@@ -62,7 +63,7 @@ namespace Othello
             }
         }
         private int blackScore;
-       public int BlackScore {
+        public int BlackScore {
             get
             {
                 return blackScore;
@@ -75,28 +76,12 @@ namespace Othello
             }
         }
         public int NumTiles { get; }
-        public TimeSpan BlackTimer { get; set; }
-        public TimeSpan WhiteTimer { get; set; }
+        private Timer _timer;
+        private int blackTime;
+        public int BlackTime { get; set; }
+        private int whiteTime;
+        public int WhiteTime { get; set; }
 
-
-        private DateTime chrono;
-
-        
-
-        private void Chrono(bool isWhite)
-        {
-            
-            if (isWhite)
-            {
-                WhiteTimer += (DateTime.Now - chrono);
-            }
-            else
-            {
-                BlackTimer += (DateTime.Now - chrono);
-            }
-
-            chrono = DateTime.Now;
-        }
 
         public Board(int numTiles = 8, MainWindow parent = null)
         {
@@ -115,12 +100,20 @@ namespace Othello
             directions.Add(new Vector2i(-1, -1));
         }
 
+        private void Chrono(bool isWhite)
+        {
+
+
+        }
+
         public void Reset()
         {
             isWhite = false;
 
-            BlackTimer = new TimeSpan();
-            WhiteTimer = new TimeSpan();
+            blackTime = whiteTime = 0;
+            _timer = new Timer(1000);
+            _timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
+            _timer.Enabled = true;
 
 
             LogicBoard = new int[NumTiles, NumTiles];
@@ -130,6 +123,23 @@ namespace Othello
             LogicBoard[half - 1, half] = (int) TileState.Black;
             LogicBoard[half, half - 1] = (int) TileState.Black;
             BlackScore = WhiteScore = 2;
+        }
+
+        private void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            
+            if (isWhite)
+            {
+                Console.WriteLine(WhiteTime);
+                WhiteTime++;
+                NotifyPropertyChanged("WhiteTime");
+            }
+            else
+            {
+                BlackTime++;
+                NotifyPropertyChanged("BlackTime");
+                
+            }
         }
 
         public void TileClicked(int column, int line)
