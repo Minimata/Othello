@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,22 +88,27 @@ namespace OthelloIA12
             NumTiles = 8;
             Reset();
 
-            directions = new List<Vector2i>();
-            directions.Add(new Vector2i(0, 1));
-            directions.Add(new Vector2i(0, -1));
-            directions.Add(new Vector2i(1, 0));
-            directions.Add(new Vector2i(1, 1));
-            directions.Add(new Vector2i(1, -1));
-            directions.Add(new Vector2i(-1, 0));
-            directions.Add(new Vector2i(-1, 1));
-            directions.Add(new Vector2i(-1, -1));
+            initDirections();
         }
-        public Board(int numTiles = 8/*, MainWindow parent = null*/)
+        public Board(int numTiles = 8)
         {
             //main = parent;
             NumTiles = numTiles;
             Reset();
 
+            initDirections();
+        }
+
+        public Board(Board other)
+        {
+            NumTiles = other.NumTiles;
+            isWhite = other.isWhite;
+            LogicBoard = other.LogicBoard.Clone() as int[,];
+            directions = other.directions;
+        }
+
+        private void initDirections()
+        {
             directions = new List<Vector2i>();
             directions.Add(new Vector2i(0, 1));
             directions.Add(new Vector2i(0, -1));
@@ -265,23 +271,65 @@ namespace OthelloIA12
 
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
-            List<Tuple<int, int>> possibleMoves = new List<Tuple<int, int> >();
-            for (int i=0; i< 8;i++)
+            List<Tuple<int, int>> possibleMoves = this.possibleMoves(whiteTurn);
+            if(possibleMoves.Count > 0)
+                return minimax(this, 1, 1).Item2;
+            else
+                return new Tuple<int, int>(-1, -1);
+        }
+
+        private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax)
+        {
+            List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
+            //choose best move 
+            if (depth == 0 || possibleMoves.Count == 0)
             {
-                for (int j=0; j<8;j++)
+                return new Tuple<int, Tuple<int, int>>(state.Eval(), null);
+            }
+            else
+            {
+                int optVal = minOrMax*Int32.MinValue;
+                Tuple<int, int> optOp = null;
+                foreach (var move in possibleMoves)
+                {
+                    Board nextState = state.Apply(move);
+                    Tuple<int, Tuple<int, int>> next = minimax(nextState, depth - 1, -minOrMax);
+                    if (next.Item1*minOrMax > optVal*minOrMax)
+                    {
+                        optVal = next.Item1;
+                        optOp = move;
+                    }
+                }
+                return new Tuple<int, Tuple<int, int>>(optVal, optOp);
+            }
+                
+        }
+
+        private int Eval()
+        {
+            if(isWhite) return GetWhiteScore();
+            else return GetBlackScore();
+        }
+
+        private Board Apply(Tuple<int, int> move)
+        {
+            Board newState = new Board(this);
+            newState.PlayMove(move.Item1, move.Item2, newState.isWhite);
+            return newState;
+        }
+
+        private List<Tuple<int, int>> possibleMoves(bool whiteTurn)
+        {
+            List<Tuple<int, int>> possibleMoves = new List<Tuple<int, int>>();
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
                 {
                     if (IsPlayable(i, j, whiteTurn))
-                        //return new Tuple<int, int>(i, j);
                         possibleMoves.Add(new Tuple<int, int>(i, j));
                 }
             }
-            //choose best move 
-            // ... randomly
-            if (possibleMoves.Count > 0)
-                return possibleMoves[rnd.Next(possibleMoves.Count)];
-            else
-                return new Tuple<int, int>(-1, -1);
-            //throw new NotImplementedException();
+            return possibleMoves;
         }
 
         public int GetWhiteScore()
