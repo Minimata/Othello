@@ -9,6 +9,18 @@ namespace OthelloIA12
 {
     public class Board : IPlayable.IPlayable
     {
+        private readonly int[,] scoreMatrix =
+        {
+            {7, 2, 5, 4, 4, 5, 2, 7 },
+            {2, 1, 3, 3, 3, 3, 1, 2 },
+            {5, 3, 6, 5, 5, 6, 3, 5 },
+            {4, 3, 5, 6, 6, 5, 3, 4 },
+            {4, 3, 5, 6, 6, 5, 3, 4 },
+            {5, 3, 6, 5, 5, 6, 3, 5 },
+            {2, 1, 3, 3, 3, 3, 1, 2 },
+            {7, 2, 5, 4, 4, 5, 2, 7 }
+        };
+
         public enum TileState
         {
             Empty = 0,
@@ -273,12 +285,12 @@ namespace OthelloIA12
         {
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(whiteTurn);
             if(possibleMoves.Count > 0)
-                return minimax(this, 1, 1).Item2;
+                return minimax(this, 4, 1, this.Eval()).Item2;
             else
                 return new Tuple<int, int>(-1, -1);
         }
 
-        private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax)
+        private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax, int parentValue)
         {
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
             //choose best move 
@@ -293,11 +305,12 @@ namespace OthelloIA12
                 foreach (var move in possibleMoves)
                 {
                     Board nextState = state.Apply(move);
-                    Tuple<int, Tuple<int, int>> next = minimax(nextState, depth - 1, -minOrMax);
+                    Tuple<int, Tuple<int, int>> next = minimax(nextState, depth - 1, -minOrMax, optVal);
                     if (next.Item1*minOrMax > optVal*minOrMax)
                     {
                         optVal = next.Item1;
                         optOp = move;
+                        //if (optVal*minOrMax > parentValue*minOrMax) break;
                     }
                 }
                 return new Tuple<int, Tuple<int, int>>(optVal, optOp);
@@ -307,8 +320,26 @@ namespace OthelloIA12
 
         private int Eval()
         {
-            if(isWhite) return GetWhiteScore();
-            else return GetBlackScore();
+            const int weightMobility = 4;
+            const int weightScore = 6;
+
+            int mobi = this.possibleMoves(this.isWhite).Count;
+            int score = 0;
+
+            for (int i = 0; i < NumTiles; i++)
+            {
+                for (int j = 0; j < NumTiles; j++)
+                {
+                    int pawn = LogicBoard[i, j];
+                    if(isWhite && pawn == (int) TileState.White)
+                        score += scoreMatrix[i, j];
+                    else if (!isWhite && pawn==(int) TileState.Black)
+                        score += scoreMatrix[i, j];
+                } 
+            }
+            
+
+            return weightMobility * mobi + weightScore * score;
         }
 
         private Board Apply(Tuple<int, int> move)
