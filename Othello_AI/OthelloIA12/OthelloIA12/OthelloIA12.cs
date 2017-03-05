@@ -285,12 +285,13 @@ namespace OthelloIA12
         {
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(whiteTurn);
             if(possibleMoves.Count > 0)
-                return minimax(this, 4, 1, this.Eval()).Item2;
+                return minimax(this, 5, 1, Int32.MaxValue).Item2;
+                //return alphabeta(this, 5, Int32.MinValue, Int32.MaxValue).Item2;
             else
                 return new Tuple<int, int>(-1, -1);
         }
 
-        private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax, int parentValue)
+        private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax, int parentValue = Int32.MaxValue)
         {
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
             //choose best move 
@@ -305,12 +306,12 @@ namespace OthelloIA12
                 foreach (var move in possibleMoves)
                 {
                     Board nextState = state.Apply(move);
-                    Tuple<int, Tuple<int, int>> next = minimax(nextState, depth - 1, -minOrMax, optVal);
-                    if (next.Item1*minOrMax > optVal*minOrMax)
+                    int next = minimax(nextState, depth - 1, -minOrMax, optVal).Item1;
+                    if (next*minOrMax > optVal*minOrMax)
                     {
-                        optVal = next.Item1;
+                        optVal = next;
                         optOp = move;
-                        //if (optVal*minOrMax > parentValue*minOrMax) break;
+                        if (optVal*minOrMax > parentValue*minOrMax) break;
                     }
                 }
                 return new Tuple<int, Tuple<int, int>>(optVal, optOp);
@@ -318,26 +319,56 @@ namespace OthelloIA12
                 
         }
 
+        private Tuple<int, Tuple<int, int>> alphabeta(Board state, int depth, int alpha, int beta)
+        {
+            List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
+            if (depth == 0 || possibleMoves.Count == 0)
+            {
+                return new Tuple<int, Tuple<int, int>>(state.Eval(), null);
+            }
+            else
+            {
+                int best = Int32.MinValue;
+                foreach (var move in possibleMoves)
+                {
+                    Board nextState = state.Apply(move);
+                    int val = alphabeta(nextState, depth - 1, -beta, -alpha).Item1;
+                    if (val > best)
+                    {
+                        best = val;
+                        if (best > alpha)
+                        {
+                            alpha = best;
+                            if (alpha >= beta)
+                            {
+                                return new Tuple<int, Tuple<int, int>>(best, move);
+                            }
+                        }
+                    }
+                }
+                return new Tuple<int, Tuple<int, int>>(best, possibleMoves.First());
+            }
+        }
+
         private int Eval()
         {
-            const int weightMobility = 4;
-            const int weightScore = 6;
+            const int weightMobility = 5;
+            const int weightScore = 5;
 
             int mobi = this.possibleMoves(this.isWhite).Count;
             int score = 0;
+
 
             for (int i = 0; i < NumTiles; i++)
             {
                 for (int j = 0; j < NumTiles; j++)
                 {
                     int pawn = LogicBoard[i, j];
-                    if(isWhite && pawn == (int) TileState.White)
-                        score += scoreMatrix[i, j];
-                    else if (!isWhite && pawn==(int) TileState.Black)
-                        score += scoreMatrix[i, j];
+                    score += pawn*scoreMatrix[i, j];
                 } 
             }
             
+            if (!isWhite) score = -score;
 
             return weightMobility * mobi + weightScore * score;
         }
