@@ -85,7 +85,7 @@ namespace ConsoleTestDLLOthello
             //a)Recover the types from the DLL assemblies using reflection for the 2 players
             if (IAPlayers.Count >= 2)
             {
-                Type[] T1 = IAPlayers[0].GetTypes();
+                Type[] T1 = IAPlayers[1].GetTypes();
                 for (int i = 0; i < T1.Count(); i++)
                 {
                     if (T1[i].Name.Contains("Board"))       // the IA's class that implements IPlayable must have "Board" in its name. E.g OthelloBoard, TheBoard, MyBoard, ...
@@ -93,7 +93,7 @@ namespace ConsoleTestDLLOthello
                 }
                 if (player1 == null)
                     player1 = new OthelloIA2.OthelloBoard();
-                Type[] T2 = IAPlayers[1].GetTypes();        //or    GetType ("OthelloIA2.OthelloBoard");
+                Type[] T2 = IAPlayers[0].GetTypes();        //or    GetType ("OthelloIA2.OthelloBoard");
                 for (int i = 0; i < T2.Count(); i++)
                 {
                     if (T2[i].Name.Contains("Board"))       // the IA's class that implements IPlayable must have "Board" in its name. E.g OthelloBoard, TheBoard, MyBoard, ...
