@@ -291,10 +291,9 @@ namespace OthelloIA12
                 return new Tuple<int, int>(-1, -1);
         }
 
-        private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax, int parentValue = Int32.MaxValue)
+        private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax, int parentValue)
         {
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
-            //choose best move 
             if (depth == 0 || possibleMoves.Count == 0)
             {
                 return new Tuple<int, Tuple<int, int>>(state.Eval(), null);
@@ -352,8 +351,9 @@ namespace OthelloIA12
 
         private int Eval()
         {
-            const int weightMobility = 5;
-            const int weightScore = 5;
+            const int weightMobility = 4;
+            const int weightScore = 6;
+            int numPawns = blackScore + whiteScore;
 
             int mobi = this.possibleMoves(this.isWhite).Count;
             int score = 0;
@@ -370,7 +370,8 @@ namespace OthelloIA12
             
             if (!isWhite) score = -score;
 
-            return weightMobility * mobi + weightScore * score;
+            //return weightMobility * mobi + weightScore * score;
+            return (64 - numPawns)*weightMobility*mobi + numPawns*weightScore*score;
         }
 
         private Board Apply(Tuple<int, int> move)
