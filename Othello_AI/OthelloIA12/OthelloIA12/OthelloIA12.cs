@@ -9,16 +9,16 @@ namespace OthelloIA12
 {
     public class Board : IPlayable.IPlayable
     {
-        private readonly int[,] scoreMatrix =
+        private int[,] scoreMatrix =
         {
-            {60, 5 , 30, 27, 27, 30, 5 , 60 },
-            {5 , 0 , 20, 20, 20, 20, 0 , 5  },
-            {30, 20, 40, 30, 30, 40, 20, 30 },
-            {27, 20, 30, 40, 40, 30, 20, 27 },
-            {27, 20, 30, 40, 40, 30, 20, 27 },
-            {30, 20, 40, 30, 30, 40, 20, 30 },
-            {5 , 0 , 20, 20, 20, 20, 0 , 5  },
-            {60, 5 , 30, 27, 27, 30, 5 , 60 }
+            {60, 5, 30, 27, 27, 30, 5, 60},
+            {5, 0, 20, 20, 20, 20, 0, 5},
+            {30, 20, 40, 30, 30, 40, 20, 30},
+            {27, 20, 30, 40, 40, 30, 20, 27},
+            {27, 20, 30, 40, 40, 30, 20, 27},
+            {30, 20, 40, 30, 30, 40, 20, 30},
+            {5, 0, 20, 20, 20, 20, 0, 5},
+            {60, 5, 30, 27, 27, 30, 5, 60}
         };
 
         public enum TileState
@@ -35,6 +35,7 @@ namespace OthelloIA12
                 this.x = x;
                 this.y = y;
             }
+
             public int x;
             public int y;
 
@@ -60,13 +61,10 @@ namespace OthelloIA12
         private int whiteScore;
         private Random rnd = new Random();
         private const string filename = "score.txt";
+
         public int WhiteScore
         {
-
-            get
-            {
-                return whiteScore;
-            }
+            get { return whiteScore; }
 
             set
             {
@@ -74,20 +72,20 @@ namespace OthelloIA12
                 //NotifyPropertyChanged("WhiteScore");
             }
         }
+
         private int blackScore;
+
         public int BlackScore
         {
-            get
-            {
-                return blackScore;
-            }
+            get { return blackScore; }
 
             set
             {
                 blackScore = value;
-               // NotifyPropertyChanged("BlackScore");
+                // NotifyPropertyChanged("BlackScore");
             }
         }
+
         public int NumTiles { get; private set; }
         private int blackTime;
         public int BlackTime { get; set; }
@@ -95,13 +93,14 @@ namespace OthelloIA12
         public int WhiteTime { get; set; }
 
 
-        public Board() 
+        public Board()
         {
             NumTiles = 8;
             Reset();
 
             initDirections();
         }
+
         public Board(int numTiles = 8)
         {
             //main = parent;
@@ -136,11 +135,11 @@ namespace OthelloIA12
         {
             isWhite = false;
             LogicBoard = new int[NumTiles, NumTiles];
-            int half = NumTiles / 2;
-            LogicBoard[half - 1, half - 1] = (int)TileState.White;
-            LogicBoard[half, half] = (int)TileState.White;
-            LogicBoard[half - 1, half] = (int)TileState.Black;
-            LogicBoard[half, half - 1] = (int)TileState.Black;
+            int half = NumTiles/2;
+            LogicBoard[half - 1, half - 1] = (int) TileState.White;
+            LogicBoard[half, half] = (int) TileState.White;
+            LogicBoard[half - 1, half] = (int) TileState.Black;
+            LogicBoard[half, half - 1] = (int) TileState.Black;
             BlackScore = WhiteScore = 2;
         }
 
@@ -162,11 +161,9 @@ namespace OthelloIA12
         }
 
 
-
         public bool isTilePlayable(int column, int line)
         {
             return (IsPlayable(column, line, isWhite));
-
         }
 
         public string GetName()
@@ -178,13 +175,13 @@ namespace OthelloIA12
         public int[,] GetBoard()
         {
             int[,] tournamentBoard = new int[8, 8];
-            for (int i=0;i<8;i++)
+            for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (LogicBoard[i, j] == (int)TileState.Empty)
+                    if (LogicBoard[i, j] == (int) TileState.Empty)
                         tournamentBoard[i, j] = -1;
-                    else if (LogicBoard[i, j] == (int)TileState.White)
+                    else if (LogicBoard[i, j] == (int) TileState.White)
                         tournamentBoard[i, j] = 0;
                     else
                         tournamentBoard[i, j] = +1;
@@ -198,21 +195,21 @@ namespace OthelloIA12
         {
             if ((LogicBoard[column, line] != 0)) return false; // Tile must be empty
 
-            int color = (int)TileState.Black;
-            if (isWhite) color = (int)TileState.White;
+            int color = (int) TileState.Black;
+            if (isWhite) color = (int) TileState.White;
             Vector2i pos = new Vector2i(column, line);
 
             foreach (var dir in directions)
             {
                 Vector2i sideTile = pos + dir;
                 if (sideTile.IsValid(NumTiles) &&
-                        LogicBoard[sideTile.x, sideTile.y] != color &&
-                        LogicBoard[sideTile.x, sideTile.y] != 0)
+                    LogicBoard[sideTile.x, sideTile.y] != color &&
+                    LogicBoard[sideTile.x, sideTile.y] != 0)
                 {
                     Vector2i tile = sideTile + dir;
                     while (tile.IsValid(NumTiles) &&
-                        LogicBoard[tile.x, tile.y] != color &&
-                        LogicBoard[tile.x, tile.y] != 0)
+                           LogicBoard[tile.x, tile.y] != color &&
+                           LogicBoard[tile.x, tile.y] != 0)
                     {
                         tile = tile + dir;
                     }
@@ -232,8 +229,8 @@ namespace OthelloIA12
             if (IsPlayable(column, line, isWhite))
             {
                 //Settling an integer for entering color in the logic state board.
-                int color = (int)TileState.Black;
-                if (isWhite) color = (int)TileState.White;
+                int color = (int) TileState.Black;
+                if (isWhite) color = (int) TileState.White;
 
                 //Settling the actual position for vectorial operations and a list of pawns to replace
                 Vector2i pos = new Vector2i(column, line);
@@ -248,8 +245,8 @@ namespace OthelloIA12
                     //While we're in the board and we can find an opposite color pawn in a direction, we add positions to add a pawn to later, and we iterate until we reach 
                     //the end of the board or pawn of our color.
                     while (tile.IsValid(NumTiles) &&
-                        LogicBoard[tile.x, tile.y] != color &&
-                        LogicBoard[tile.x, tile.y] != 0)
+                           LogicBoard[tile.x, tile.y] != color &&
+                           LogicBoard[tile.x, tile.y] != 0)
                     {
                         tmp.Add(new Tuple<int, int>(tile.x, tile.y));
                         tile = tile + dir;
@@ -268,11 +265,26 @@ namespace OthelloIA12
                 foreach (var pair in pawnsToReplace)
                 {
                     LogicBoard[pair.Item1, pair.Item2] = color;
-                   // main.UpdateBoard(pair, isWhite);
+                    // main.UpdateBoard(pair, isWhite);
                 }
 
                 BlackScore = GetBlackScore();
                 WhiteScore = GetWhiteScore();
+
+
+                //When end approch, change value score matrix
+
+                if (BlackScore + WhiteScore > 63)
+                {
+                    for (int i = 0; i < scoreMatrix.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < scoreMatrix.GetLength(1); j++)
+                        {
+                            scoreMatrix[i, j] = 666;
+                        }
+                    }
+                }
+
 
 
 
@@ -285,16 +297,15 @@ namespace OthelloIA12
         {
             isWhite = whiteTurn;
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(whiteTurn);
-            if(possibleMoves.Count > 0)
+            if (possibleMoves.Count > 0)
                 return minimax(this, 5, 1, Int32.MaxValue).Item2;
-                //return alphabeta(this, 5, Int32.MinValue, Int32.MaxValue).Item2;
+            //return alphabeta(this, 5, Int32.MinValue, Int32.MaxValue).Item2;
             else
                 return new Tuple<int, int>(-1, -1);
         }
 
         private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax, int parentValue)
         {
-            
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
             if (depth == 0 || possibleMoves.Count == 0)
             {
@@ -312,50 +323,15 @@ namespace OthelloIA12
                     {
                         optVal = next;
                         optOp = move;
-                        //Console.Write("d:" + depth + "p" + parentValue + "o:"+optVal);
                         if (optVal*minOrMax > parentValue*minOrMax)
-                        {
-                            
                             break;
-                        }
                     }
                 }
                 return new Tuple<int, Tuple<int, int>>(optVal, optOp);
             }
-                
         }
 
-        private Tuple<int, Tuple<int, int>> alphabeta(Board state, int depth, int alpha, int beta)
-        {
-            List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
-            if (depth == 0 || possibleMoves.Count == 0)
-            {
-                return new Tuple<int, Tuple<int, int>>(state.Eval(), null);
-            }
-            else
-            {
-                int best = Int32.MinValue;
-                foreach (var move in possibleMoves)
-                {
-                    Board nextState = state.Apply(move);
-                    int val = alphabeta(nextState, depth - 1, -beta, -alpha).Item1;
-                    if (val > best)
-                    {
-                        best = val;
-                        if (best > alpha)
-                        {
-                            alpha = best;
-                            if (alpha >= beta)
-                            {
-                                return new Tuple<int, Tuple<int, int>>(best, move);
-                            }
-                        }
-                    }
-                }
-                return new Tuple<int, Tuple<int, int>>(best, possibleMoves.First());
-            }
-        }
-
+        //Evaluation function based on matrix score + mobility
         private int Eval()
         {
             const int weightMobility = 4;
@@ -366,18 +342,20 @@ namespace OthelloIA12
             int score = 0;
 
 
+
             for (int i = 0; i < NumTiles; i++)
             {
                 for (int j = 0; j < NumTiles; j++)
                 {
                     int pawn = LogicBoard[i, j];
+                    //white += 1
+                    //black += -1
                     score += pawn*scoreMatrix[i, j];
-                } 
+                }
             }
-            
+
             if (!isWhite) score = -score;
 
-            //return weightMobility * mobi + weightScore * score;
             return (64 - numPawns)*weightMobility*mobi + numPawns*weightScore*score;
         }
 
@@ -432,7 +410,5 @@ namespace OthelloIA12
         {
             return isWhite;
         }
-
     }
-
 }
