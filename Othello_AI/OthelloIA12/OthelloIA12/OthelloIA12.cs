@@ -283,6 +283,7 @@ namespace OthelloIA12
 
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
+            isWhite = whiteTurn;
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(whiteTurn);
             if(possibleMoves.Count > 0)
                 return minimax(this, 5, 1, Int32.MaxValue).Item2;
@@ -293,6 +294,7 @@ namespace OthelloIA12
 
         private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax, int parentValue)
         {
+            
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
             if (depth == 0 || possibleMoves.Count == 0)
             {
@@ -300,7 +302,7 @@ namespace OthelloIA12
             }
             else
             {
-                int optVal = minOrMax*Int32.MinValue;
+                int optVal = minOrMax*-6666666;
                 Tuple<int, int> optOp = null;
                 foreach (var move in possibleMoves)
                 {
@@ -310,7 +312,12 @@ namespace OthelloIA12
                     {
                         optVal = next;
                         optOp = move;
-                        if (optVal*minOrMax > parentValue*minOrMax) break;
+                        //Console.Write("d:" + depth + "p" + parentValue + "o:"+optVal);
+                        if (optVal*minOrMax > parentValue*minOrMax)
+                        {
+                            
+                            break;
+                        }
                     }
                 }
                 return new Tuple<int, Tuple<int, int>>(optVal, optOp);

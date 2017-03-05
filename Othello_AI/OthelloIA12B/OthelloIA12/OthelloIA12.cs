@@ -284,7 +284,6 @@ namespace OthelloIA12
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
             isWhite = whiteTurn;
-            Console.WriteLine(isWhite);
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(whiteTurn);
             if (possibleMoves.Count > 0)
                 return minimax(this, 5, 1, Int32.MaxValue).Item2;
@@ -296,27 +295,27 @@ namespace OthelloIA12
         private Tuple<int, Tuple<int, int>> minimax(Board state, int depth, int minOrMax, int parentValue)
         {
             List<Tuple<int, int>> possibleMoves = this.possibleMoves(state.isWhite);
-            //choose best move 
             if (depth == 0 || possibleMoves.Count == 0)
             {
                 return new Tuple<int, Tuple<int, int>>(state.Eval(), null);
             }
-
-            int optVal = minOrMax * Int32.MinValue;
-            Tuple<int, int> optOp = null;
-            foreach (var move in possibleMoves)
+            else
             {
-                Board nextState = state.Apply(move);
-                int next = minimax(nextState, depth - 1, -minOrMax, optVal).Item1;
-                if (next * minOrMax > optVal * minOrMax)
+                int optVal = minOrMax * Int32.MinValue;
+                Tuple<int, int> optOp = null;
+                foreach (var move in possibleMoves)
                 {
-                    optVal = next;
-                    optOp = move;
-                    if (optVal * minOrMax > parentValue * minOrMax) break;
+                    Board nextState = state.Apply(move);
+                    int next = minimax(nextState, depth - 1, -minOrMax, optVal).Item1;
+                    if (next * minOrMax > optVal * minOrMax)
+                    {
+                        optVal = next;
+                        optOp = move;
+                        if (optVal * minOrMax > parentValue * minOrMax) break;
+                    }
                 }
+                return new Tuple<int, Tuple<int, int>>(optVal, optOp);
             }
-            return new Tuple<int, Tuple<int, int>>(optVal, optOp);
-
 
         }
 
@@ -353,8 +352,9 @@ namespace OthelloIA12
 
         private int Eval()
         {
-            const int weightMobility = 5;
-            const int weightScore = 5;
+            const int weightMobility = 4;
+            const int weightScore = 6;
+            int numPawns = blackScore + whiteScore;
 
             int mobi = this.possibleMoves(this.isWhite).Count;
             int score = 0;
@@ -371,7 +371,8 @@ namespace OthelloIA12
 
             if (!isWhite) score = -score;
 
-            return weightMobility * mobi + weightScore * score;
+            //return weightMobility * mobi + weightScore * score;
+            return (64 - numPawns) * weightMobility * mobi + numPawns * weightScore * score;
         }
 
         private Board Apply(Tuple<int, int> move)
